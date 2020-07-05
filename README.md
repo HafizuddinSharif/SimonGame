@@ -1,6 +1,6 @@
 ### SIMON GAME
 
-A simple Simon game created with basic HTML, CSS and Javascript.__
+A simple Simon game created with basic HTML, CSS and Javascript.<br/>
 Feel free to fork it
 
 Press the link below to play the game:
