@@ -1,8 +1,15 @@
+// -----------------------------------------------
+// VARIABLES
+// -----------------------------------------------
 const colours = ['blue', 'red', 'yellow', 'green']
 var gamePattern = []
 var userClickedPattern = []
 var level = 0
 var start = false
+
+// -----------------------------------------------
+// FUNCTIONS
+// -----------------------------------------------
 
 // Generate next pattern
 function nextSequence() {
@@ -11,41 +18,7 @@ function nextSequence() {
   gamePattern.push(randomColour)
 }
 
-$(document).on("keypress", function(event) {
-
-  if (!start) {
-    start = true
-    nextSequence()
-    showGamePattern()
-    $(".header").text("Level " + level)
-    console.log(gamePattern)
-  }
-})
-
-$('.btn').on("click", function(event) {
-  if (start) {
-    var userClickedButtonColour = event.target.id
-
-    animatePress(userClickedButtonColour)
-    playSound(userClickedButtonColour)
-
-    userClickedPattern.push(userClickedButtonColour)
-    console.log(userClickedButtonColour)
-
-    if (subList() && userClickedPattern.length === gamePattern.length) {
-      level++
-      userClickedPattern = []
-      nextSequence()
-      showGamePattern()
-      $(".header").text("Level " + level)
-      console.log(gamePattern)
-    }
-    else if (!subList()) {
-      gameOver()
-    }
-  }
-})
-
+// Create the animation of button when pressed
 function animatePress(colour) {
   $("#" + colour).addClass("pressed")
 
@@ -54,12 +27,14 @@ function animatePress(colour) {
   }, 100)
 }
 
+// Produce sound when a button is clicked
 function playSound(colour) {
   const audio = new Audio("sounds/" + colour + ".mp3")
   audio.play()
   console.log("clicked")
 }
 
+// To show the pattern for the player to follow
 function showGamePattern() {
 
   let start = 0
@@ -78,6 +53,7 @@ function showGamePattern() {
   }
 }
 
+// To check if userClickedPattern contains inside gamePattern
 function subList() {
   for (var i = 0; i < userClickedPattern.length; i++) {
     if (userClickedPattern[i] != gamePattern[i]) return false
@@ -86,6 +62,7 @@ function subList() {
   return true
 }
 
+// To reset the game when its game over
 function gameOver() {
   level = 0
   userClickedPattern = []
@@ -100,3 +77,54 @@ function gameOver() {
     $(".header").text("Press any key to restart")
   }, 1000)
 }
+
+// -----------------------------------------------
+// EVENT HANDLERS
+// -----------------------------------------------
+
+
+// Handle any keyboard press to start the game
+$(document).on("keypress", function(event) {
+
+  if (!start) {
+    start = true
+    nextSequence()
+    showGamePattern()
+    $(".header").text("Level " + level)
+    console.log(gamePattern)
+  }
+})
+
+
+// Handle any mouse click event on the buttons
+$('.btn').on("click", function(event) {
+  if (start) {
+
+    // To get the ID of the button
+    var userClickedButtonColour = event.target.id
+
+    // Animation and sound when a button is pressed
+    animatePress(userClickedButtonColour)
+    playSound(userClickedButtonColour)
+
+    userClickedPattern.push(userClickedButtonColour)
+
+    // To check if the userClickedPattern is equal to gamePattern
+    if (subList() && userClickedPattern.length === gamePattern.length) {
+
+      // If its true, run the code below to go to the next level
+      level++
+      userClickedPattern = []
+      nextSequence()
+      showGamePattern()
+      $(".header").text("Level " + level)
+    }
+
+    // If there is a difference between userClickedPattern and gamePattern
+    else if (!subList()) {
+
+      // Initiate gameOver and reset the game
+      gameOver()
+    }
+  }
+})
